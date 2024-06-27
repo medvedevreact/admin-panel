@@ -23,3 +23,6 @@ html,
   justify-content: flex-start;
   align-items: flex-start;
 }
+.ant-space-item {
+  height: 100%;
+}

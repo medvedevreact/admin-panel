@@ -7,12 +7,14 @@ import {
 import { Menu } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "./SideMenu.module.scss";
 
 export const SideMenu: React.FC = () => {
   const navigate = useNavigate();
   return (
-    <aside>
+    <aside className={styles.sideMenu}>
       <Menu
+        className={styles.sideMenuVertical}
         onClick={(item) => {
           navigate(item.key);
         }}

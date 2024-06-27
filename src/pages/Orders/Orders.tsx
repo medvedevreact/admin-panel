@@ -8,7 +8,7 @@ interface Order {
   totalCost: number;
 }
 
-const Orders: React.FC = () => {
+export const Orders: React.FC = () => {
   const columns = [
     {
       title: "Order ID",
@@ -53,5 +53,3 @@ const Orders: React.FC = () => {
     </div>
   );
 };
-
-export default Orders;

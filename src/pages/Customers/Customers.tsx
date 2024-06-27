@@ -11,7 +11,7 @@ interface Customer {
   address: string;
 }
 
-const Customers: React.FC = () => {
+export const Customers: React.FC = () => {
   const columns = [
     {
       title: "Customer ID",
@@ -137,5 +137,3 @@ const Customers: React.FC = () => {
     </div>
   );
 };
-
-export default Customers;
