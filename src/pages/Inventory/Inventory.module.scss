@@ -1,3 +1,19 @@
 .title {
   margin-top: 25px;
+  margin-bottom: 20px;
+}
+.customTable .ant-table-cell {
+  font-size: 16px !important;
+}
+td {
+  font-size: 16px;
+}
+
+.customTable .ant-table-thead > tr > th,
+.customTable .ant-table-tbody > tr > td {
+  padding: 8px;
+}
+
+.customTable .ant-table-cell {
+  word-break: break-word;
 }
