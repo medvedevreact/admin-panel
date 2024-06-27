@@ -1,0 +1,29 @@
+.title {
+  margin-top: 25px;
+  margin-bottom: 20px;
+}
+.subTitle {
+  margin-bottom: 15px;
+}
+.chartContainer {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+.content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tableContainer {
+  min-width: 600px;
+  flex: 1;
+  margin-right: 20px;
+  min-height: 250px;
+}
+
+.chartContainer {
+  flex: 1;
+  min-width: 500px;
+  min-height: 250px;
+}
