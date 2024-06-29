@@ -14,6 +14,7 @@ export type OrdersSliceState = {
   error: string | null;
   totalQuantity: number;
   totalRevenue: number;
+  newOrders: OrderItem[]; // Добавляем новые заказы для отслеживания уведомлений
 };
 
 const fetchOrdersData: AsyncThunk<OrderItem[], void, {}> = createAsyncThunk(
@@ -26,14 +27,16 @@ const fetchOrdersData: AsyncThunk<OrderItem[], void, {}> = createAsyncThunk(
   }
 );
 
+type localStorage = OrderItem[] | [];
+
 const initialState: OrdersSliceState = {
   items: [],
   loading: false,
   error: null,
   totalQuantity: 0,
   totalRevenue: 0,
+  newOrders: [], // Инициализируем новые заказы как пустой массив
 };
-
 const ordersSlice = createSlice({
   name: "orders",
   initialState,
@@ -45,6 +48,10 @@ const ordersSlice = createSlice({
         0
       );
     },
+
+    resetNewOrders(state) {
+      state.newOrders = [];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -53,13 +60,40 @@ const ordersSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchOrdersData.fulfilled, (state, action) => {
-        state.items = action.payload;
-        state.loading = false;
-        state.totalQuantity = action.payload.length;
-        state.totalRevenue = action.payload.reduce(
-          (acc, order) => acc + order.totalCost,
-          0
+        // Получаем сохраненные заказы из localStorage
+        const savedOrders: localStorage = JSON.parse(
+          localStorage.getItem("savedOrders") || "[]"
         );
+
+        // Фильтруем новые заказы, которых еще нет в state.items
+        const newOrders = action.payload.filter(
+          (order) =>
+            !state.items.some((item) => item.id === order.id) &&
+            !savedOrders.some((savedOrder) => savedOrder.id === order.id)
+        );
+
+        if (newOrders.length > 0) {
+          // Обновляем список заказов в state
+          state.items = action.payload;
+          state.loading = false;
+          state.totalQuantity = action.payload.length;
+          state.totalRevenue = action.payload.reduce(
+            (acc, order) => acc + order.totalCost,
+            0
+          );
+
+          // Добавляем новые заказы в newOrders
+          state.newOrders.push(...newOrders);
+        } else {
+          // Обновляем список заказов в state
+          state.items = action.payload;
+          state.loading = false;
+          state.totalQuantity = action.payload.length;
+          state.totalRevenue = action.payload.reduce(
+            (acc, order) => acc + order.totalCost,
+            0
+          );
+        }
       })
       .addCase(fetchOrdersData.rejected, (state, action) => {
         state.loading = false;
@@ -68,7 +102,7 @@ const ordersSlice = createSlice({
   },
 });
 
-export const { calcOrderStats } = ordersSlice.actions;
+export const { calcOrderStats, resetNewOrders } = ordersSlice.actions;
 
 export default ordersSlice.reducer;
 

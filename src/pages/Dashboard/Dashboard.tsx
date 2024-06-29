@@ -118,12 +118,11 @@ export const Dashboard: React.FC = () => {
     }
   }
 
-  console.log(monthlyRevenue);
-
   useEffect(() => {
+    // Вызываем один раз при загрузке компонента
     dispatch(fetchInventoryData());
-    dispatch(fetchOrdersData());
     dispatch(fetchCustomersData());
+    dispatch(fetchOrdersData());
   }, []);
 
   return (
