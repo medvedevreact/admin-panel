@@ -17,3 +17,8 @@ td {
 .customTable .ant-table-cell {
   word-break: break-word;
 }
+.fixedImage {
+  width: 50px !important; // Устанавливаем фиксированную ширину изображения
+  height: 50px !important; // Устанавливаем фиксированную высоту изображения
+  object-fit: contain; // Обрезка изображения, чтобы оно соответствовало заданным размерам
+}

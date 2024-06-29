@@ -1,55 +1,45 @@
 import React from "react";
 import { Table } from "antd";
 import styles from "./Orders.module.scss";
-
-interface Order {
-  orderId: number;
-  customerId: string;
-  totalCost: number;
-}
+import { useAppSelector } from "../../store";
+import { OrderItem } from "../../store/ordersSlice";
 
 export const Orders: React.FC = () => {
+  const data: OrderItem[] = useAppSelector((state) => state.orders.items);
+
   const columns = [
     {
-      title: "Order ID",
-      dataIndex: "orderId",
-      key: "orderId",
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      width: 200,
     },
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+      width: 200,
+    },
+
     {
       title: "Customer ID",
       dataIndex: "customerId",
       key: "customerId",
+      width: 200,
     },
     {
       title: "Total Cost",
       dataIndex: "totalCost",
       key: "totalCost",
       render: (totalCost: number) => `$${totalCost.toFixed(2)}`,
-    },
-  ];
-
-  const data: Order[] = [
-    {
-      orderId: 1,
-      customerId: "ABC123",
-      totalCost: 150.75,
-    },
-    {
-      orderId: 2,
-      customerId: "XYZ789",
-      totalCost: 299.99,
-    },
-    {
-      orderId: 3,
-      customerId: "DEF456",
-      totalCost: 199.5,
+      width: 200,
     },
   ];
 
   return (
     <div>
       <h2 className={styles.title}>Orders</h2>
-      <Table columns={columns} dataSource={data} />
+      <Table columns={columns} dataSource={data} pagination={{ pageSize: 5 }} />
     </div>
   );
 };

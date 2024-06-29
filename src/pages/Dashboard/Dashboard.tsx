@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -19,43 +19,36 @@ import {
 } from "@ant-design/icons";
 
 import styles from "./Dashboard.module.scss";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { fetchCustomersData } from "../../store/customersSlice";
+import { fetchInventoryData } from "../../store/inventorySlice";
+import { fetchOrdersData } from "../../store/ordersSlice";
 
 const columns = [
   {
-    title: "Title",
-    dataIndex: "title",
-    key: "title",
+    title: "ID",
+    dataIndex: "id",
+    key: "id",
+    width: 200,
   },
   {
-    title: "Quantity",
-    dataIndex: "quantity",
-    key: "quantity",
+    title: "Date",
+    dataIndex: "date",
+    key: "date",
+    width: 200,
   },
   {
-    title: "Price",
-    dataIndex: "price",
-    key: "price",
-  },
-];
-
-const data = [
-  {
-    key: "1",
-    title: "Product A",
-    quantity: 2,
-    price: "$50",
+    title: "Customer ID",
+    dataIndex: "customerId",
+    key: "customerId",
+    width: 200,
   },
   {
-    key: "2",
-    title: "Product B",
-    quantity: 3,
-    price: "$75",
-  },
-  {
-    key: "3",
-    title: "Product C",
-    quantity: 1,
-    price: "$100",
+    title: "Total Cost",
+    dataIndex: "totalCost",
+    key: "totalCost",
+    render: (totalCost: number) => `$${totalCost.toFixed(2)}`,
+    width: 200,
   },
 ];
 
@@ -81,20 +74,58 @@ export const options = {
   },
 };
 
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
-
-export const dataChart = {
-  labels,
-  datasets: [
-    {
-      label: "Revenue",
-      data: [500, 600, 700, 800, 900, 1000, 1100],
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
-    },
-  ],
-};
+const monthsNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 export const Dashboard: React.FC = () => {
+  const inventoryQuantity = useAppSelector(
+    (state) => state.inventory.totalQuantity
+  );
+
+  const orders = useAppSelector((state) => state.orders.items);
+  const ordersQuantity = useAppSelector((state) => state.orders.totalQuantity);
+  const ordersRevenue = useAppSelector((state) => state.orders.totalRevenue);
+  const recentOrders = orders.slice(-3);
+  const customersQuantity = useAppSelector(
+    (state) => state.customers.customersQuantity
+  );
+  const dispatch = useAppDispatch();
+
+  let monthlyRevenue = {};
+
+  for (let i = 0; i < orders.length; i++) {
+    const dateStr = orders[i].date;
+    const date = new Date(dateStr);
+    const month = date.getMonth();
+    const monthName = monthsNames[month];
+
+    if (monthlyRevenue.hasOwnProperty(monthName)) {
+      monthlyRevenue[monthName] += orders[i].totalCost;
+    } else {
+      monthlyRevenue[monthName] = orders[i].totalCost;
+    }
+  }
+
+  console.log(monthlyRevenue);
+
+  useEffect(() => {
+    dispatch(fetchInventoryData());
+    dispatch(fetchOrdersData());
+    dispatch(fetchCustomersData());
+  }, []);
+
   return (
     <div>
       <h2 className={styles.title}>Dashboard</h2>
@@ -112,7 +143,7 @@ export const Dashboard: React.FC = () => {
             />
           }
           title={"Inventory"}
-          value={100}
+          value={inventoryQuantity}
         />
         <DashboardCard
           icon={
@@ -127,7 +158,7 @@ export const Dashboard: React.FC = () => {
             />
           }
           title={"Orders"}
-          value={100}
+          value={ordersQuantity}
         />
         <DashboardCard
           icon={
@@ -142,7 +173,7 @@ export const Dashboard: React.FC = () => {
             />
           }
           title={"Customer"}
-          value={100}
+          value={customersQuantity}
         />
         <DashboardCard
           icon={
@@ -157,17 +188,33 @@ export const Dashboard: React.FC = () => {
             />
           }
           title={"Revenue"}
-          value={100}
+          value={parseFloat(ordersRevenue.toFixed(2))}
         />
       </Space>
 
       <div className={styles.content}>
         <div className={styles.tableContainer}>
           <h4 className={styles.subTitle}>Recent Orders</h4>
-          <Table columns={columns} dataSource={data} pagination={false} />
+          <Table
+            columns={columns}
+            dataSource={recentOrders.reverse()}
+            pagination={false}
+          />
         </div>
         <div className={styles.chartContainer}>
-          <Bar data={dataChart} options={options} />
+          <Bar
+            data={{
+              labels: Object.keys(monthlyRevenue),
+              datasets: [
+                {
+                  label: "Revenue",
+                  data: Object.values(monthlyRevenue),
+                  backgroundColor: "rgba(255, 99, 132, 0.5)",
+                },
+              ],
+            }}
+            options={options}
+          />
         </div>
       </div>
     </div>
