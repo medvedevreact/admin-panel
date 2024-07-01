@@ -61,6 +61,10 @@ ChartJS.register(
   Legend
 );
 
+interface MonthlyRevenue {
+  [month: string]: number;
+}
+
 export const options = {
   responsive: true,
   plugins: {
@@ -103,7 +107,7 @@ export const Dashboard: React.FC = () => {
   );
   const dispatch = useAppDispatch();
 
-  let monthlyRevenue = {};
+  let monthlyRevenue: MonthlyRevenue = {};
 
   for (let i = 0; i < orders.length; i++) {
     const dateStr = orders[i].date;
