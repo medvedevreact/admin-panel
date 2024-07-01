@@ -2,3 +2,30 @@
   margin-top: 25px;
   margin-bottom: 20px;
 }
+.fixedImage {
+  width: 50px !important; // Устанавливаем фиксированную ширину изображения
+  height: 50px !important; // Устанавливаем фиксированную высоту изображения
+  object-fit: contain; // Обрезка изображения, чтобы оно соответствовало заданным размерам
+  margin-right: 10px;
+}
+.modalContent {
+  padding: 20px;
+}
+
+.orderItem {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.orderItemDetails {
+  flex: 1;
+}
+.customerInfo {
+  margin-bottom: 15px;
+}
+.itemsList {
+  margin-bottom: 15px;
+}
+.tableRowHover:hover {
+  cursor: pointer;
+}

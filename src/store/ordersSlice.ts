@@ -1,11 +1,13 @@
 import { createSlice, createAsyncThunk, AsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { InventoryItem } from "./inventorySlice";
 
 export interface OrderItem {
   id: string;
   customerId: string;
   totalCost: number;
   date: string;
+  items: InventoryItem[];
 }
 
 export type OrdersSliceState = {
